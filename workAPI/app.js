@@ -2,9 +2,13 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const quoteRotues = require('./routes/quotes');
 const orderRotues = require('./routes/orders');
+
+mongoose.connect('mongodb+srv://sliskebaggins:zaros1415926535@cluster0.iwtwq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
