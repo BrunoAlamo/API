@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Quote = require('./models/quote');
 
-mongoose.connect('mongodb+srv://sliskebaggins:zaros1415926535@cluster0.iwtwq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+const MONGO_URI = 'mongodb+srv://sliskebaggins:zaros1415926535@cluster0.iwtwq.mongodb.net/quotesDB?retryWrites=true&w=majority&appName=Cluster0';
 
 const quotes = [
     {quote: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.", author: "- Thomas A. Edison"},
@@ -71,12 +71,22 @@ const quotes = [
 
 async function populateDB() {
     try {
-        await Quote.insertMany(quotes);
-        console.log("Quotes added successfully!");
-        mongoose.connection.close();
+      console.log("Connecting to MongoDB...");
+      await mongoose.connect(MONGO_URI);
+  
+      console.log("Connected! Clearing old quotes...");
+      await Quote.deleteMany({});
+  
+      console.log("Inserting new quotes...");
+      await Quote.insertMany(quotes);
+  
+      console.log("✅ Quotes added successfully!");
     } catch (error) {
-        console.log("Error inserting quotes:", error);
+      console.error("❌ Error inserting quotes:", error);
+    } finally {
+      mongoose.connection.close();
+      console.log("🔌 Disconnected from MongoDB.");
     }
-}
+  }
 
 populateDB();
